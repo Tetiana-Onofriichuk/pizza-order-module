@@ -12,7 +12,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body
+        className="min-h-screen text-gray-900"
+        style={{
+          background: "url('/images/bg.png') center / cover no-repeat",
+        }}
+      >
+        {children}
+      </body>
     </html>
   );
 }
