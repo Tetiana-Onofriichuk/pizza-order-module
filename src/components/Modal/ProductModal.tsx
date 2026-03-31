@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import BaseModal from "@/src/components/Modal/BaseModal";
 import { Product, PizzaSize } from "@/src/types/product";
 import { CartItem } from "@/src/types/cart";
 import { calculatePizzaPrice } from "@/src/utils/price";
@@ -70,8 +71,8 @@ export default function ProductModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-white p-6 rounded-2xl max-w-md w-full shadow-lg">
+    <BaseModal isOpen={!!product} onClose={onClose} className="w-full max-w-md">
+      <div className="p-6 max-w-md mx-auto">
         <h2 className="text-2xl font-bold mb-2">{product.name}</h2>
 
         <p className="text-sm text-gray-500 mb-5">{product.description}</p>
@@ -209,6 +210,6 @@ export default function ProductModal({
           </button>
         </div>
       </div>
-    </div>
+    </BaseModal>
   );
 }
