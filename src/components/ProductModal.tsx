@@ -1,7 +1,9 @@
 "use client";
+
 import { useState } from "react";
-import { Product, PizzaSize } from "@/src/data/products";
+import { Product, PizzaSize } from "@/src/types/product";
 import { CartItem } from "@/src/types/cart";
+import { calculatePizzaPrice } from "@/src/utils/price";
 
 type ProductModalProps = {
   product: Product | null;
@@ -14,13 +16,13 @@ export default function ProductModal({
   onClose,
   onAddToCart,
 }: ProductModalProps) {
-  const initialSize = product?.type === "pizza" ? product.sizes[0] : null;
+  const initialSize = product?.type === "pizza" ? product.sizes[0] : undefined;
 
-  const [selectedSize, setSelectedSize] = useState<PizzaSize | null>(
+  const [selectedSize, setSelectedSize] = useState<PizzaSize | undefined>(
     initialSize,
   );
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
-  const [selectedDrink, setSelectedDrink] = useState<string>("");
+  const [selectedDrink, setSelectedDrink] = useState("");
   const [quantity, setQuantity] = useState(1);
 
   if (!product) {
@@ -35,24 +37,17 @@ export default function ProductModal({
     );
   };
 
-  const calculateUnitPrice = () => {
-    if (product.type === "pizza") {
-      const sizePrice = selectedSize ? product.basePrice[selectedSize] : 0;
+  const unitPrice =
+    product.type === "pizza"
+      ? calculatePizzaPrice(
+          product,
+          selectedSize ?? product.sizes[0],
+          selectedIngredients,
+        )
+      : product.price;
 
-      const ingredientsPrice = product.ingredients
-        .filter((ingredient) => selectedIngredients.includes(ingredient.id))
-        .reduce((sum, ingredient) => sum + ingredient.price, 0);
-
-      return sizePrice + ingredientsPrice;
-    }
-
-    return product.price;
-  };
-
-  const unitPrice = calculateUnitPrice();
   const totalPrice = unitPrice * quantity;
-
-  const isAddToCartDisabled = product.type === "menu" && selectedDrink === "";
+  const isAddToCartDisabled = product.type === "menu" && !selectedDrink;
 
   const handleAddToCart = () => {
     if (isAddToCartDisabled) {
@@ -61,12 +56,11 @@ export default function ProductModal({
 
     const cartItem: CartItem = {
       id: crypto.randomUUID(),
-      productId: product.id,
       product,
       quantity,
       selectedSize,
       selectedIngredients,
-      selectedDrink,
+      selectedDrink: selectedDrink || undefined,
       unitPrice,
       totalPrice,
     };
@@ -154,7 +148,7 @@ export default function ProductModal({
                 </label>
               ))}
 
-              {selectedDrink === "" && (
+              {!selectedDrink && (
                 <p className="text-sm text-red-500 mt-2">
                   Please select a drink
                 </p>

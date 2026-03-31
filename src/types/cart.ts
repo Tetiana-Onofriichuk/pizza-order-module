@@ -1,13 +1,12 @@
-import { Product, PizzaSize } from "@/src/data/products";
+import { Product, PizzaSize } from "@/src/types/product";
 
 export type CartItem = {
   id: string;
-  productId: number;
   product: Product;
   quantity: number;
-  selectedSize: PizzaSize | null;
-  selectedIngredients: string[];
-  selectedDrink: string;
+  selectedSize?: PizzaSize;
+  selectedIngredients?: string[];
+  selectedDrink?: string;
   unitPrice: number;
   totalPrice: number;
 };
