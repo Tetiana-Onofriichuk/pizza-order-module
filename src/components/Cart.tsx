@@ -3,9 +3,16 @@ import { CartItem } from "@/src/types/cart";
 type CartProps = {
   items: CartItem[];
   onRemove: (id: string) => void;
+  onIncreaseQuantity: (id: string) => void;
+  onDecreaseQuantity: (id: string) => void;
 };
 
-export default function Cart({ items, onRemove }: CartProps) {
+export default function Cart({
+  items,
+  onRemove,
+  onIncreaseQuantity,
+  onDecreaseQuantity,
+}: CartProps) {
   const totalAmount = items.reduce((sum, item) => sum + item.totalPrice, 0);
 
   const getItemOptionsLabel = (item: CartItem) => {
@@ -28,6 +35,8 @@ export default function Cart({ items, onRemove }: CartProps) {
 
   return (
     <div className="bg-white rounded-2xl p-5 shadow-sm">
+      <h2 className="text-2xl font-bold mb-4">Cart</h2>
+
       {items.length === 0 ? (
         <p className="text-gray-500">Your cart is empty</p>
       ) : (
@@ -52,9 +61,29 @@ export default function Cart({ items, onRemove }: CartProps) {
                       Unit price: ${item.unitPrice.toFixed(2)}
                     </p>
 
-                    <p className="text-sm">Quantity: {item.quantity}</p>
+                    <div className="flex items-center gap-3 mt-3">
+                      <button
+                        type="button"
+                        onClick={() => onDecreaseQuantity(item.id)}
+                        className="w-9 h-9 rounded-xl border border-gray-300 cursor-pointer"
+                      >
+                        -
+                      </button>
 
-                    <p className="text-base font-medium mt-2">
+                      <span className="font-semibold w-6 text-center">
+                        {item.quantity}
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={() => onIncreaseQuantity(item.id)}
+                        className="w-9 h-9 rounded-xl border border-gray-300 cursor-pointer"
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    <p className="text-base font-medium mt-3">
                       Position total: ${item.totalPrice.toFixed(2)}
                     </p>
                   </div>

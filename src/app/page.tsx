@@ -4,18 +4,17 @@ import { useState } from "react";
 import Image from "next/image";
 import ProductCard from "@/src/components/ProductCard";
 import ProductModal from "@/src/components/Modal/ProductModal";
-import Cart from "@/src/components/Cart";
+import CartModal from "@/src/components/Modal/CartModal";
 import { useProducts } from "@/src/hooks/useProducts";
 import { Product } from "@/src/types/product";
 import { CartItem } from "@/src/types/cart";
-import CartModal from "@/src/components/Modal/CartModal";
 
 export default function Home() {
   const { products, loading, error } = useProducts();
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const handleAddToCart = (item: CartItem) => {
     setCartItems((prev) => {
@@ -59,6 +58,40 @@ export default function Home() {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
+  const handleIncreaseQuantity = (id: string) => {
+    setCartItems((prev) =>
+      prev.map((item) => {
+        if (item.id !== id) return item;
+
+        const newQuantity = item.quantity + 1;
+
+        return {
+          ...item,
+          quantity: newQuantity,
+          totalPrice: newQuantity * item.unitPrice,
+        };
+      }),
+    );
+  };
+
+  const handleDecreaseQuantity = (id: string) => {
+    setCartItems((prev) =>
+      prev
+        .map((item) => {
+          if (item.id !== id) return item;
+
+          const newQuantity = item.quantity - 1;
+
+          return {
+            ...item,
+            quantity: newQuantity,
+            totalPrice: newQuantity * item.unitPrice,
+          };
+        })
+        .filter((item) => item.quantity > 0),
+    );
+  };
+
   const totalCartQuantity = cartItems.reduce(
     (sum, item) => sum + item.quantity,
     0,
@@ -85,8 +118,7 @@ export default function Home() {
           alt="Pizza"
           width={720}
           height={480}
-          priority
-          className="mx-auto rounded-2xl mb-8 w-full h-auto"
+          className="mx-auto rounded-2xl mb-8"
         />
 
         {loading ? (
@@ -119,6 +151,8 @@ export default function Home() {
           items={cartItems}
           onClose={() => setIsCartOpen(false)}
           onRemove={handleRemoveFromCart}
+          onIncreaseQuantity={handleIncreaseQuantity}
+          onDecreaseQuantity={handleDecreaseQuantity}
         />
       </div>
     </main>

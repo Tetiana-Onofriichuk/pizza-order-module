@@ -9,6 +9,8 @@ type CartModalProps = {
   items: CartItem[];
   onClose: () => void;
   onRemove: (id: string) => void;
+  onIncreaseQuantity: (id: string) => void;
+  onDecreaseQuantity: (id: string) => void;
 };
 
 export default function CartModal({
@@ -16,10 +18,12 @@ export default function CartModal({
   items,
   onClose,
   onRemove,
+  onIncreaseQuantity,
+  onDecreaseQuantity,
 }: CartModalProps) {
   return (
     <BaseModal isOpen={isOpen} onClose={onClose} className="w-full max-w-2xl">
-      <div className="p-6 w-full max-w-2xl mx-auto">
+      <div className="p-6">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-2xl font-bold">Your Cart</h2>
 
@@ -32,7 +36,12 @@ export default function CartModal({
           </button>
         </div>
 
-        <Cart items={items} onRemove={onRemove} />
+        <Cart
+          items={items}
+          onRemove={onRemove}
+          onIncreaseQuantity={onIncreaseQuantity}
+          onDecreaseQuantity={onDecreaseQuantity}
+        />
       </div>
     </BaseModal>
   );
