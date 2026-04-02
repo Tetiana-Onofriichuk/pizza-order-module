@@ -159,11 +159,3 @@ Open in browser:
 ```bash
 http://localhost:3000
 ```
-
-## Possible Improvements
-
-- save cart to `localStorage`
-- add product images
-- move cart logic to a custom hook or context
-- connect a real backend API
-- add tests for utilities and cart logic
