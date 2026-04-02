@@ -1,36 +1,169 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pizza Order Module
+
+A small pizza ordering app built with **Next.js**, **React**, **TypeScript**, and **Tailwind CSS**.
+
+## Features
+
+- Product list with pizzas, drinks, desserts, and menu items
+- Product modal with configurable options
+- Pizza price calculation based on:
+  - selected size
+  - selected extra ingredients
+  - quantity
+- Menu item validation with required drink selection
+- Cart modal with:
+  - added products list
+  - unit price
+  - quantity
+  - total price per position
+  - total amount
+  - remove item action
+  - increase quantity directly in the cart
+  - decrease quantity directly in the cart
+  - automatic removal when quantity reaches zero
+- Cart merge logic:
+  - same product + same options => quantity increases
+  - same product + different options => separate cart positions
+- Mock API with loading and error handling
+
+## Tech Stack
+
+- **Next.js**
+- **React**
+- **TypeScript**
+- **Tailwind CSS**
+
+## Project Structure
+
+```bash
+src/
+├── api/
+│   └── products.ts
+├── app/
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
+├── components/
+│   ├── BaseModal.tsx
+│   ├── Cart.tsx
+│   ├── CartModal.tsx
+│   ├── ProductCard.tsx
+│   └── ProductModal.tsx
+├── data/
+│   └── products.ts
+├── hooks/
+│   └── useProducts.ts
+├── types/
+│   ├── cart.ts
+│   └── product.ts
+└── utils/
+    └── price.ts
+```
+
+## How It Works
+
+### Products
+
+Products are stored in a mock data file and fetched through a small mock API layer.
+
+### Product Modal
+
+The modal allows the user to configure the selected product:
+
+- pizza: choose size and extra ingredients
+- menu: choose a required drink
+- other products: add directly with quantity
+
+### Price Calculation
+
+Pizza price is calculated in a separate utility function:
+
+- base price depends on selected size
+- extra ingredients are added to the base price
+- total price = unit price × quantity
+
+### Cart Logic
+
+The cart is stored in local page state.
+
+When a new item is added:
+
+- if the same product with the same options already exists in the cart, the app increases `quantity`
+- if the options are different, the app creates a separate cart position
+
+Compared fields:
+
+- `product.id`
+- `selectedSize`
+- `selectedDrink`
+- `selectedIngredients`
+
+To compare ingredients correctly, ingredient arrays are sorted before comparison.
+
+The cart also supports quantity changes directly inside the cart modal:
+
+- `+` increases the quantity of the selected item
+- `-` decreases the quantity of the selected item
+- if quantity becomes `0`, the item is removed automatically
+
+When quantity changes, the app recalculates:
+
+- `quantity`
+- `totalPrice`
+
+`unitPrice` stays unchanged because it represents the price of one configured item.
+
+### Modal Behavior
+
+The project uses a reusable `BaseModal` component for modal windows.
+
+It handles:
+
+- closing on overlay click
+- closing on `Escape`
+- scroll locking while modal is open
+
+This base component is reused by both:
+
+- `ProductModal`
+- `CartModal`
+
+## Main Concepts Used
+
+- React `useState`
+- React `useEffect`
+- custom hooks
+- functional state updates
+- immutable array updates with spread operator, `map`, and `filter`
+- TypeScript union types
+- conditional rendering
+- separation of concerns
+- reusable base modal pattern
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open in browser:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Possible Improvements
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- save cart to `localStorage`
+- add product images
+- move cart logic to a custom hook or context
+- connect a real backend API
+- add tests for utilities and cart logic
